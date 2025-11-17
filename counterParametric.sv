@@ -1,6 +1,6 @@
 module counterParametric #(parameter COUNT = 1, parameter WIDTH = 1) (
     input logic clk, rst,
-    output logic counter
+    output logic [WIDTH-1:0] counter
 );
 
     logic [WIDTH-1:0] counter_n;

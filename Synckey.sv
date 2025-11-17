@@ -5,4 +5,14 @@ module Synckey
     output logic pressed
 );
 
+
+    counterParametric #(.COUNT(64), .WIDTH(6)) a
+    (
+        .clk(clk), .rst(rst), .counter(columnTimer)
+    );
+
+    always_comb begin
+
+    end
+
 endmodule
