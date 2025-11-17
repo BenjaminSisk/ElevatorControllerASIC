@@ -1,7 +1,6 @@
 module debouncing (
 input logic clk, rst,
 input logic en,
-input logic column,
 input logic [3:0] row, 
 output logic [3:0] buttonMux
 );
@@ -20,7 +19,7 @@ always_comb begin
     if (en) begin 
         newRow_n = row;
     end else begin
-        newRow_n = newRow;
+        newRow_n = 0;
     end
 end
 
@@ -36,7 +35,15 @@ always_comb begin
     if (en) begin 
         oldRow_n = row;
     end else begin
-        oldRow_n = newRow;
+        oldRow_n = 0;
+    end
+end
+
+always_ff @(posedge clk, posedge rst) begin
+    if (rst) begin
+        oldestRow <= 4'b0;
+    end else begin
+        oldestRow <= oldestRow_n;
     end
 end
 
@@ -44,7 +51,7 @@ always_comb begin
     if (columnDebounce == 2 && en) begin 
         oldestRow_n = oldRow;
     end else begin
-        oldestRow_n = oldestRow;
+        oldestRow_n = 0;
     end
 end
 
