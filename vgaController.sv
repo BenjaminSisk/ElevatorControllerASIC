@@ -1,7 +1,8 @@
 `default_nettype none
 module vgaController(
     input logic enable, reset,
-    output logic hsync, vsync
+    output logic hsync, vsync,
+    output logic [3:0]R, [3:0]G, [3:0]B
 );
     // VGA timing specifications
     localparam horiz_pixel = 640;
@@ -14,6 +15,18 @@ module vgaController(
     localparam vert_back_porch = 33;
 
     // PLL Instantiation
-    pll_clkGen u0 ();
+    pixel_clk
+    pll_clkGen u0 (.VGA_CLK(pixel_clk));
+
+    // Counter values
+    logic curr_horiz;
+    logic curr_vert;
+
+    // Flip-flop block
+    always_ff @(posedge pixel_clk, posedge reset) begin
+        if (reset) begin
+            
+        end
+    end
 
 endmodule
