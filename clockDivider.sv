@@ -24,7 +24,7 @@ module team_06_clkdivider #(parameter COUNT = 1, parameter WIDTH = 1) (
         counter_n = counter;
         clkOut_n = clkOut;
         if(counter == COUNT) begin
-            counter_n = 1;
+            counter_n = 0;
             clkOut_n = ~clkOut;
         end
         else begin
