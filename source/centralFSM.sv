@@ -3,7 +3,7 @@ module centralFSM
     input logic clk, rst,
     input logic [3:0] buttonBus,
     input logic pressed,
-    output logic [1:0] simState, setting, algorithm,
+    output logic [1:0] simState, setting, //algorithm,
     output logic [2:0] simSpeed, 
     output logic [5:0] people
 );
@@ -40,7 +40,6 @@ module centralFSM
         end
     end
 
-    logic numReset;
     always_comb begin
         case (simState)
             START: simState_n = (buttonBus == RESUME) ? SIM : START;
@@ -54,12 +53,9 @@ module centralFSM
             ENDING: simState_n = (buttonBus == RESUME) ? START : ENDING;
             default: simState_n = START;
         endcase
-        numReset = (simState == START) ? 0 : 1;
+        
     end
-
-
-
-
+    
     logic [15:0] buttons;
     always_comb begin // We use priority encoder in synkey then a decoder in central fsm to only allow one button press at a time
         case(buttonBus) 
@@ -95,7 +91,7 @@ module centralFSM
     end
 
     always_comb begin
-        if (buttonBus == ENTER | buttonBus == ESCAPE | numReset) begin
+        if (buttonBus == ENTER | buttonBus == ESCAPE | !(simState == START)) begin
             number_n = 0;
         end else if (|buttons[9:0]) begin
             number_n = number * 10 + {2'b0, buttonBus};
@@ -104,5 +100,73 @@ module centralFSM
             number_n = number;
         end
     end 
+
+    logic [1:0] setting_n;
+    always_ff@(posedge clk, posedge rst) begin
+        if (rst) begin 
+            setting <= 0;
+        end else begin
+            setting <= setting_n;
+        end
+    end
+
+    always_comb begin
+        if (buttonBus == UP) begin
+            case(setting)
+            PEOPLE: setting_n = ALGORITHM;
+            ALGORITHM: setting_n = SIMSPEED;
+            SIMSPEED: setting_n = PEOPLE;
+            SETTINGINVALID: setting_n = PEOPLE;
+            endcase
+        end else if (buttonBus == DOWN) begin
+            case(setting)
+            PEOPLE: setting_n = SIMSPEED;
+            ALGORITHM: setting_n = PEOPLE;
+            SIMSPEED: setting_n = ALGORITHM;
+            SETTINGINVALID: setting_n = PEOPLE;
+            endcase
+        end else begin
+            setting_n = (setting == SETTINGINVALID) ? PEOPLE : setting;
+        end
+    end
+
+    logic [2:0] simSpeed_n;
+    always_ff@(posedge clk, posedge rst)
+    if (rst) begin 
+        simSpeed <= 0;
+    end else begin
+        simSpeed <= simSpeed_n;
+    end
+
+    always_comb begin
+        simSpeed_n = simSpeed;
+        if(buttonBus == ENTER && setting == SIMSPEED) begin 
+            if (number < 7) begin
+                simSpeed_n = number[2:0];
+            end else begin
+                simSpeed_n = 7;
+            end
+        end
+    end
+
+    logic [5:0] people_n;
+    always_ff@(posedge clk, posedge rst) begin
+        if (rst) begin 
+            people <= 0;
+        end else begin
+            people <= people_n;
+        end
+    end
+
+    always_comb begin
+        people_n = people;
+        if (buttonBus == ENTER && setting == PEOPLE) begin
+            if (number < 63) begin
+                people_n = number;
+            end else begin
+                people_n = 63;
+            end
+        end
+    end
 
 endmodule
