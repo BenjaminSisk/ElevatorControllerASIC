@@ -1,4 +1,4 @@
-module Synckey
+module synckey
 (
     input logic clk, rst,
     input logic [3:0] row,
