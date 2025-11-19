@@ -1,4 +1,4 @@
-module team_06_clkdivider #(parameter COUNT = 1, parameter WIDTH = 1) (
+module clkDivider #(parameter COUNT = 1, parameter WIDTH = 1) (
     input logic clk, rst,
     output logic clkOut,
     output logic past_clkOut
