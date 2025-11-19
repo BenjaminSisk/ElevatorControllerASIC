@@ -15,12 +15,13 @@ module counterParametric #(parameter COUNT = 1, parameter WIDTH = 1) (
     end
 
     always_comb begin
-        if(counter == COUNT) begin
-            counter_n = 0;
-        end else if (en) begin
-            counter_n = counter + 1;
-        end else begin
+        
+        if (!en) begin
             counter_n = counter;
+        end else if(counter == COUNT) begin
+            counter_n = 0;
+        end else begin
+            counter_n = counter + 1;
         end
     end
 endmodule
