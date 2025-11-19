@@ -15,11 +15,12 @@ always_ff @(posedge clk, posedge rst) begin
     end
 end
 
+// If needed, we may want to base this edge detector on counters to support debouncing 
 always_comb begin 
     if (en) begin 
         newRow_n = row;
     end else begin
-        newRow_n = 0;
+        newRow_n = 4'b0; // If we are not interested in this column, we should output active low
     end
 end
 
@@ -48,13 +49,14 @@ always_ff @(posedge clk, posedge rst) begin
 end
 
 always_comb begin
-    if (columnDebounce == 2 && en) begin 
+    if (en) begin 
         oldestRow_n = oldRow;
     end else begin
-        oldestRow_n = 0;
+        oldestRow_n = 4'b0;
     end
 end
 
+// If the recent data is high and the less recent data is low, we must have a positive edge
 assign buttonMux =(~oldestRow & oldRow);
 
 endmodule

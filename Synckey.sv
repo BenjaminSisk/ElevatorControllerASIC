@@ -11,9 +11,11 @@ module Synckey
     logic [15:0] encoderIn;
     counterParametric #(.COUNT(6'd63), .WIDTH(6)) a
     (
-        .clk(clk), .rst(rst), .counter(columnTimer)
+        .clk(clk), .rst(rst), .counter(columnTimer), .en(1)
     );
 
+    // For 16 clock cycles, the button matrix will search for a positive edge for a column, then switch
+    // to a different column (may need to be increased significantly)
     always_comb begin
         columnDemux = columnTimer[5:4];
     end

@@ -1,10 +1,3 @@
-`define STOP 4'hA
-`define RESUME 4'hB
-`define UP 4'hC
-`define DOWN 4'hD
-`define ESCAPE 4'hE
-`define ENTER 4'hF
-
 module centralFSM
 (
     input logic clk, rst,
