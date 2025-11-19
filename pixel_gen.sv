@@ -3,4 +3,6 @@ module pixel_gen (
     output logic [3:0]R, [3:0]G, [3:0]B
 );
 
+
+
 endmodule

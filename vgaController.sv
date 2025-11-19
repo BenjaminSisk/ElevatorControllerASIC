@@ -1,6 +1,7 @@
 `default_nettype none
 module vgaController(
     input logic enable, reset,
+    input logic sim_state[3:0],
     output logic hsync, vsync, drawn,
     output logic [9:0]x_coord, y_coord
 );
