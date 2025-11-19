@@ -3,7 +3,7 @@ module centralFSM
     input logic clk, rst,
     input logic [3:0] buttonBus,
     input logic pressed,
-    output logic [1:0] simState, setting, //algorithm,
+    output logic [1:0] simState, setting, //algorithm, we can add later if we want
     output logic [2:0] simSpeed, 
     output logic [5:0] people
 );
@@ -31,7 +31,7 @@ module centralFSM
         ENTER = 4'hF
     } BUTTON;
 
-    STATE simState_n;
+    STATE simState_n; 
     always_ff @(posedge clk, posedge rst) begin
         if (rst) begin
             simState <= START;
@@ -40,6 +40,7 @@ module centralFSM
         end
     end
 
+    // Se simState state machine
     always_comb begin
         case (simState)
             START: simState_n = (buttonBus == RESUME) ? SIM : START;
@@ -56,28 +57,29 @@ module centralFSM
         
     end
     
-    logic [15:0] buttons;
+    logic [9:0] buttonNumber;
     always_comb begin // We use priority encoder in synkey then a decoder in central fsm to only allow one button press at a time
         case(buttonBus) 
-        4'hF: buttons = 16'b1000000000000000;
-        4'hE: buttons = 16'b0100000000000000;
-        4'hD: buttons = 16'b0010000000000000;
-        4'hC: buttons = 16'b0001000000000000;
-        4'hB: buttons = 16'b0000100000000000;
-        4'hA: buttons = 16'b0000010000000000;
-        4'h9: buttons = 16'b0000001000000000;
-        4'h8: buttons = 16'b0000000100000000;
-        4'h7: buttons = 16'b0000000010000000;
-        4'h6: buttons = 16'b0000000001000000;
-        4'h5: buttons = 16'b0000000000100000;
-        4'h4: buttons = 16'b0000000000010000;
-        4'h3: buttons = 16'b0000000000001000;
-        4'h2: buttons = 16'b0000000000000100; 
-        4'h1: buttons = 16'b0000000000000010;
-        4'h0: buttons = 16'b0000000000000001;
+        //4'hF: buttonNumber = 10'b1000000000000000;
+        //4'hE: buttonNumber = 10'b0100000000000000;
+        //4'hD: buttonNumber = 10'b0010000000000000;
+        //4'hC: buttonNumber = 10'b0001000000000000;
+        //4'hB: buttonNumber = 10'b0000100000000000;
+        //4'hA: buttonNumber = 10'b0000010000000000;
+        4'h9: buttonNumber = 10'b1000000000;
+        4'h8: buttonNumber = 10'b0100000000;
+        4'h7: buttonNumber = 10'b0010000000;
+        4'h6: buttonNumber = 10'b0001000000;
+        4'h5: buttonNumber = 10'b0000100000;
+        4'h4: buttonNumber = 10'b0000010000;
+        4'h3: buttonNumber = 10'b0000001000;
+        4'h2: buttonNumber = 10'b0000000100; 
+        4'h1: buttonNumber = 10'b0000000010;
+        4'h0: buttonNumber = 10'b0000000001;
+        default: buttonNumber = 10'b0;
         endcase
         if (!pressed) begin
-            buttons = 16'b0;
+            buttonNumber = 10'b0;
         end
     end
 
@@ -90,10 +92,11 @@ module centralFSM
         end
     end
 
+    // This is used to determine the number stored in our number register (for selecting the value of a setting)
     always_comb begin
         if (buttonBus == ENTER | buttonBus == ESCAPE | !(simState == START)) begin
             number_n = 0;
-        end else if (|buttons[9:0]) begin
+        end else if (|buttonNumber[9:0]) begin
             number_n = number * 10 + {2'b0, buttonBus};
             number_n = (number > number_n) ? number: number_n;
         end else begin
@@ -110,6 +113,7 @@ module centralFSM
         end
     end
 
+    // See setting state machine
     always_comb begin
         if (buttonBus == UP) begin
             case(setting)
@@ -138,6 +142,7 @@ module centralFSM
         simSpeed <= simSpeed_n;
     end
 
+    // This sets the simspeed if entered, can be 7 max
     always_comb begin
         simSpeed_n = simSpeed;
         if(buttonBus == ENTER && setting == SIMSPEED) begin 
@@ -158,6 +163,7 @@ module centralFSM
         end
     end
 
+     // This sets the number of people if entered, can be 63 max
     always_comb begin
         people_n = people;
         if (buttonBus == ENTER && setting == PEOPLE) begin
