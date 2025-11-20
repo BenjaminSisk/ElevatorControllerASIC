@@ -1,9 +1,9 @@
 `default_nettype none
 module vgaController(
-    input logic enable, reset,
-    input logic sim_state[3:0],
-    output logic hsync, vsync, drawn,
-    output logic [9:0]x_coord, y_coord
+    input logic reset,
+    input logic sim_state[1:0],
+    output logic hsync, vsync,
+    output logic [9:0]horiz_count, vert_count
 );
     // VGA timing specifications
     localparam horiz_pixel = 640;
@@ -20,33 +20,38 @@ module vgaController(
     pll_clkGen pll_u0 (.VGA_CLK(pixel_clk));
 
     // Counter values and local enable for the pixel generator
-    logic [9:0] horiz_count;
-    logic [9:0] vert_count;
-    logic display_enable;
+    logic [9:0] next_horiz_count;
+    logic [9:0] next_vert_count;
+    logic enable;
 
-    // Output RBG and sync values
+    // Counter values
     always_ff @(posedge pixel_clk, posedge reset) begin
         if (reset) begin
             horiz_count <= 0;
-            vert_count <= 0;
+            count <= 0;
             enable <= 0;
             // Hsync and Vsync are active low signals
             hsync <= 1'b1;
             vsync <= 1'b1;
         end
         else begin
-            counterParametric #(.COUNT(800), .WIDTH(10)) horiz_counter (.clk(pixel_clk), .rst(reset), .counter(horiz_count))
-            begin
-                if (horiz_count > horiz_back_porch + horiz_front_porch + horiz_pixel + horz_sync_pulse - 1) begin
-                    counterParametric #(.COUNT(525), .WIDTH(10) vert_counter (.clk(pixel_clk), .rst(reset), .counter(vert_count)))
-                end
-            end
+            horiz_count <= next_horiz_count;
+            vert_count <= next_vert_count;
         end
     end
 
     // Horizontal logic
     always_comb begin
-        if ((horiz_count >= horiz_pixel + horiz_front_porch) && (horiz_count < horiz_pixel + horiz_front_porch + horz_sync_pulse)) begin
+        // Counter logic
+        if (horiz_count < horiz_pixel) begin
+            next_horiz_count = next_horiz_count + 1;
+        end
+        else begin 
+            next_horiz_count = 0;
+        end
+
+        // Sync signal logic
+        if ((horiz_count > horiz_pixel + horiz_front_porch) && (horiz_count < horiz_pixel + horiz_front_porch + horz_sync_pulse)) begin
             hsync = 1'b0;
         end
         else begin
@@ -55,8 +60,17 @@ module vgaController(
     end
 
     // Vertical logic
-    always_comb begin
-        if ((vert_count >= vert_pixel + vert_front_porch) && (vert_count < vert_pixel + vert_front_porch + vert_sync_pulse)) begin
+    always_comb begin 
+        // Counter logic
+        if ((horiz_count == 0) && (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse)) begin
+            next_vert_count = next_vert_count + 1;
+        end
+        else begin
+            next_vert_count = 0;
+        end
+
+        // Sync signal logic
+        if ((vert_count > vert_pixel + vert_front_porch) && (vert_count < vert_pixel + vert_front_porch + vert_sync_pulse)) begin
             vsync = 1'b0;
         end
         else begin
@@ -66,14 +80,16 @@ module vgaController(
 
     // Display logic
     always_comb begin
-        if (enable && horiz_count < horiz_pixel && vert_count < vert_pixel) begin
-            display_enable = 1'b1;
+        if (horiz_count < horiz_pixel && vert_count < vert_pixel) begin
+            enable = 1'b1;
         end
         else begin
-            display_enable = 1'b0
+            enable = 1'b0
         end
     end
 
+    // Draw the pixels
+    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(x_coord), .y_coord(y_coord))
 
 
 
