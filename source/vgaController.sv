@@ -2,7 +2,7 @@
 module vgaController(
     input logic reset,
     input logic [7:0]destination,
-    input logic [25:0]people_data,
+    //input logic [25:0]people_data,
     input logic [1:0]sim_state,
     output logic hsync, vsync,
     output logic [9:0]horiz_count, vert_count,

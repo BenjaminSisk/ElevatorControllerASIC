@@ -3,7 +3,7 @@ module pixel_gen (
     input logic enable,
     input logic [7:0] destination,
     input logic [1:0]sim_state,
-    input logic [25:0]people_data,
+    //input logic [25:0]people_data,
     input logic [9:0]x_coord, [9:0]y_coord,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
@@ -20,14 +20,14 @@ module pixel_gen (
     always_comb begin
         if (enable) begin
             // Always draw the static elements of the screen
-            // Side sky
-            if ((x_coord >= 0 && x_coord < side_buffer) || (x_coord >= max_horiz - side_buffer && x_coord < max_horiz) && (y_coord < max_vert - top_bottom_buffer)) begin
+            // Side sky (side buffers)
+            if ((x_coord < side_buffer) || (x_coord >= max_horiz - side_buffer && x_coord < max_horiz) && (y_coord < max_vert - top_bottom_buffer)) begin
                 R = 2;
                 G = 15;
                 B = 8;
             end
 
-            // Top sky
+            // Top sky (top buffer)
             else if (y_coord < top_bottom_buffer) begin
                 R = 2;
                 G = 15;
@@ -298,7 +298,7 @@ module pixel_gen (
 
                 else if (sim_state == 1) begin
                     // 1st floor elevator
-                    if (destination[7:4] == 0) begin
+                    if (destination[3:0] == 0) begin
                         if (y_coord >= 390 && y_coord < 465) begin
                             R = 4;
                             G = 4; 
@@ -312,7 +312,7 @@ module pixel_gen (
                     end
 
                     // Half-floor 1-2
-                    else if (destination[7:4] == 1) begin
+                    else if (destination[3:0] == 1) begin
                         if (y_coord >= 353 && y_coord < 428) begin 
                             R = 4;
                             G = 4;
@@ -325,7 +325,7 @@ module pixel_gen (
                         end
                     end
                     // 2nd floor elevator
-                    else if (destination[7:4] == 2) begin
+                    else if (destination[3:0] == 2) begin
                         if (y_coord >= 315 && y_coord < 390) begin 
                             R = 4;
                             G = 4;
@@ -339,7 +339,7 @@ module pixel_gen (
 
                     end
                     // Half-floor 2-3
-                    else if (destination[7:4] == 3) begin 
+                    else if (destination[3:0] == 3) begin 
                         if (y_coord >= 278 && y_coord < 353) begin 
                             R = 4;
                             G = 4;
@@ -353,7 +353,7 @@ module pixel_gen (
 
                     end
                     // 3rd floor elevator
-                    else if (destination[7:4] == 4) begin
+                    else if (destination[3:0] == 4) begin
                         if (y_coord >= 240 && y_coord < 315) begin 
                             R = 4;
                             G = 4;
@@ -367,7 +367,7 @@ module pixel_gen (
 
                     end
                     // Half-floor 3-4
-                    else if (destination[7:4] == 5) begin
+                    else if (destination[3:0] == 5) begin
                         if (y_coord >= 203 && y_coord < 278) begin 
                             R = 4;
                             G = 4;
@@ -381,7 +381,7 @@ module pixel_gen (
 
                     end
                     // 4th floor elevator
-                    else if (destination[7:4] == 6) begin 
+                    else if (destination[3:0] == 6) begin 
                         if (y_coord >= 165 && y_coord < 240) begin 
                             R = 4;
                             G = 4;
@@ -395,7 +395,7 @@ module pixel_gen (
 
                     end
                     // Half-floor 4-5
-                    else if (destination[7:4] == 7) begin
+                    else if (destination[3:0] == 7) begin
                         if (y_coord >= 128 && y_coord < 203) begin 
                             R = 4;
                             G = 4;
@@ -409,7 +409,7 @@ module pixel_gen (
 
                     end
                     // 5th floor
-                    else if (destination[7:4] == 8) begin
+                    else if (destination[3:0] == 8) begin
                         if (y_coord >= 90 && y_coord < 165) begin 
                             R = 4;
                             G = 4;
@@ -423,7 +423,7 @@ module pixel_gen (
 
                     end
                     // Half-floor 5-6
-                    else if (destination[7:4] == 9) begin
+                    else if (destination[3:0] == 9) begin
                         if (y_coord >= 53 && y_coord < 128) begin 
                             R = 4;
                             G = 4;
