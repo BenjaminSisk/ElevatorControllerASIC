@@ -88,8 +88,8 @@ module vgaController(
         end
     end
 
-    // Draw the pixels
-    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(x_coord), .y_coord(y_coord))
+    // RGB Output and pixel generation
+    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count))
 
 
 
