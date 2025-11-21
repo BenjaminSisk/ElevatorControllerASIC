@@ -5,7 +5,7 @@ module pixel_gen (
     input logic [1:0]sim_state,
     input logic [25:0]people_data,
     input logic [9:0]x_coord, [9:0]y_coord,
-    output logic [3:0]R, [3:0]G, [3:0]B,
+    output logic [3:0]R, [3:0]G, [3:0]B
 );
     // Constant drawing parameters
     localparam max_horiz = 640;
@@ -87,7 +87,7 @@ module pixel_gen (
             end
 
             // Left elevator shaft
-            else if (x_coord >= 205 && x_coord < 295 && y_coord >= top_bottom_buffer && y < max_vert - top_bottom_buffer) begin
+            else if (x_coord >= 205 && x_coord < 295 && y_coord >= top_bottom_buffer && y_coord < max_vert - top_bottom_buffer) begin
                 // Elevator at the bottom in the initial state
                 if (sim_state == 0) begin
                     if (y_coord < max_vert - top_bottom_buffer - elevator_height) begin
@@ -470,7 +470,7 @@ module pixel_gen (
             end
 
             // Right outline
-            else if (x_coord >= 395 && x_coord < 405 && y_coord >= top_bottom_buffer && y < max_vert - top_bottom_buffer) begin
+            else if (x_coord >= 395 && x_coord < 405 && y_coord >= top_bottom_buffer && y_coord < max_vert - top_bottom_buffer) begin
                 R = 0;
                 G = 0;
                 B = 0; 

@@ -2,9 +2,11 @@
 module vgaController(
     input logic reset,
     input logic [7:0]destination,
+    input logic [25:0]people_data,
     input logic [1:0]sim_state,
     output logic hsync, vsync,
-    output logic [9:0]horiz_count, vert_count
+    output logic [9:0]horiz_count, vert_count,
+    output logic [3:0]R, [3:0]G, [3:0]B
 );
     // VGA timing specifications
     localparam horiz_pixel = 640;
@@ -29,7 +31,7 @@ module vgaController(
     always_ff @(posedge pixel_clk, posedge reset) begin
         if (reset) begin
             horiz_count <= 0;
-            count <= 0;
+            vert_count <= 0;
             enable <= 0;
             // Hsync and Vsync are active low signals
             hsync <= 1'b1;
@@ -85,13 +87,11 @@ module vgaController(
             enable = 1'b1;
         end
         else begin
-            enable = 1'b0
+            enable = 1'b0;
         end
     end
 
     // RGB Output and pixel generation
-    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination))
-
-
+    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination), .R(R), .B(B), .G(G), .people_data(people_data));
 
 endmodule
