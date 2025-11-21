@@ -14,7 +14,7 @@ logic new_direction;
 logic [7:0] elevatorPosition; //current position of the elevator (7-4) for left elevator, (3-0) for right elevator
 logic direction; //1 for up, 0 for down
 logic [4:0] floor1, floor2; //current floor of the elevator (0-11), including half floors
-logic [4:0] top_floor1, top_floor2; //highest floor triggered
+logic [4:0] top_floor1, top_floor2, bottom_floor1, bottom_floor2; //highest and lowest floor triggered
 logic en_continue;
 logic en_stop;
 logic count;
@@ -24,14 +24,14 @@ people_control_system inst(
     .FloorDestinations(FloorDestinations), .FloorsRequested(FloorsRequested), .elevatorPositions(new_elevatorPosition) 
     );
 
-counterParametric stop_f #(.COUNT(1), .WIDTH(5)) (
+counterParametric #(.COUNT(1), .WIDTH(5)) stop_f (
     .clk(clk), .rst(rst), .en(en_stop), .syncRst(~en_stop),
-    count;
+    .counter(5)
     );
 
-counterParametric continue_f #(.COUNT(60), .WIDTH(5)) (
+counterParametric #(.COUNT(60), .WIDTH(5)) continue_f (
     .clk(clk), .rst(rst), .en(en_continue), .syncRst(~en_continue),
-    count;
+    .counter(5)
     );
 
 always_comb begin
@@ -39,50 +39,46 @@ always_comb begin
     {floors_triggered1, floors_triggered2} = FloorDestinations | FloorsRequested;
     //priority encoder to get the left elevator top floor
     case (floors_triggered1) 
-        6'b0000_0001: top_floor1 = 0;
-        6'b0000_001x: top_floor1 = 1;
-        6'b0000_01xx: top_floor1 = 2;
-        6'b0000_1xxx: top_floor1 = 3;
-        6'b0001_xxxx: top_floor1 = 4;
-        6'b001x_xxxx: top_floor1 = 5;
-        6'b01xx_xxxx: top_floor1 = 6;
+        6'b00_0001: top_floor1 = 0;
+        6'b00_001x: top_floor1 = 1;
+        6'b00_01xx: top_floor1 = 2;
+        6'b00_1xxx: top_floor1 = 3;
+        6'b01_xxxx: top_floor1 = 4;
+        6'b1x_xxxx: top_floor1 = 5;
         default: top_floor1 = -1; //no floors triggered
     endcase
 
     //priority encoder to get the left elevator top floor
     case (floors_triggered2) 
-        6'b0000_0001: top_floor2 = 0;
-        6'b0000_001x: top_floor2 = 1;
-        6'b0000_01xx: top_floor2 = 2;
-        6'b0000_1xxx: top_floor2= 3;
-        6'b0001_xxxx: top_floor2= 4;
-        6'b001x_xxxx: top_floor2= 5;
-        6'b01xx_xxxx: top_floor2 = ;
-        default: top_floor = -1; //no floors triggered
+        6'b00_0001: top_floor2 = 0;
+        6'b00_001x: top_floor2 = 1;
+        6'b00_01xx: top_floor2 = 2;
+        6'b00_1xxx: top_floor2= 3;
+        6'b01_xxxx: top_floor2= 4;
+        6'b1x_xxxx: top_floor2= 5;
+        default: top_floor2 = -1; //no floors triggered
     endcase
     
     //priority encoder to get the left elevator bottom floor
     case (floors_triggered1)
-        12'b0000_0001: bottom_floor = 0;
-        12'b0000_001x: bottom_floor = 1; 
-        12'b0000_01xx: bottom_floor = 2;
-        12'b0000_1xxx: bottom_floor = 3;
-        12'b0001_xxxx: bottom_floor = 4;
-        12'b001x_xxxx: bottom_floor = 5;
-        12'b01xx_xxxx: bottom_floor = 6;
-        default: top_floor = -1; //no floors triggered
+        6'b00_0001: bottom_floor1 = 0;
+        6'b00_001x: bottom_floor1 = 1; 
+        6'b00_01xx: bottom_floor1 = 2;
+        6'b00_1xxx: bottom_floor1 = 3;
+        6'b01_xxxx: bottom_floor1 = 4;
+        6'b1x_xxxx: bottom_floor1 = 5;
+        default: bottom_floor1 = -1; //no floors triggered
     endcase
 
     //priority encoder to get the right elevator bottom floor
     case (floors_triggered2)
-        12'b0000_0001: bottom_floor = 0;
-        12'b0000_001x: bottom_floor = 1; 
-        12'b0000_01xx: bottom_floor = 2;
-        12'b0000_1xxx: bottom_floor = 3;
-        12'b0001_xxxx: bottom_floor = 4;
-        12'b001x_xxxx: bottom_floor = 5;
-        12'b01xx_xxxx: bottom_floor = 6;
-        default: top_floor = -1; //no floors triggered
+        6'b00_0001: bottom_floor2 = 0;
+        6'b00_001x: bottom_floor2 = 1; 
+        6'b00_01xx: bottom_floor2 = 2;
+        6'b00_1xxx: bottom_floor2 = 3;
+        6'b01_xxxx: bottom_floor2 = 4;
+        6'b1x_xxxx: bottom_floor2 = 5;
+        default: bottom_floor2 = -1; //no floors triggered
     endcase
     
     //floor1 movement logic
