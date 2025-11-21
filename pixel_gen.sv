@@ -1,12 +1,13 @@
 `default_nettype none
 module pixel_gen (
     input logic enable,
+    input logic [7:0] destination,
     input logic [1:0]sim_state,
     input logic [25:0]people_data,
     input logic [9:0]x_coord, [9:0]y_coord,
     output logic [3:0]R, [3:0]G, [3:0]B,
 );
-
+    // Constant drawing parameters
     localparam max_horiz = 640;
     localparam max_vert = 480;
     localparam side_buffer = 20;
@@ -14,6 +15,7 @@ module pixel_gen (
     localparam floor_width = 75;
     localparam building_width = 200;
     localparam outline_width = 10;
+    localparam elevator_height = 70;
 
     always_comb begin
         if (enable) begin
@@ -86,9 +88,190 @@ module pixel_gen (
 
             // Left elevator shaft
             else if (x_coord >= 205 && x_coord < 295 && y_coord >= top_bottom_buffer && y < max_vert - top_bottom_buffer) begin
-                R = 8;
-                G = 4;
-                B = 1;
+                // Elevator at the bottom in the initial state
+                if (sim_state == 0) begin
+                    if (y_coord < max_vert - top_bottom_buffer - elevator_height) begin
+                        R = 8;
+                        G = 4; 
+                        B = 1;
+                    end
+                    else begin
+                        R = 4;
+                        G = 4;
+                        B = 4;
+                    end
+                end
+
+                else if (sim_state == 1) begin
+                    // 1st floor elevator
+                    if (destination[7:4] == 0) begin
+                        if (y_coord >= 390 && y_coord < 465) begin
+                            R = 4;
+                            G = 4; 
+                            B = 4;
+                        end
+                        else begin
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+                    end
+
+                    // Half-floor 1-2
+                    else if (destination[7:4] == 1) begin
+                        if (y_coord >= 353 && y_coord < 428) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+                    end
+                    // 2nd floor elevator
+                    else if (destination[7:4] == 2) begin
+                        if (y_coord >= 315 && y_coord < 390) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 2-3
+                    else if (destination[7:4] == 3) begin 
+                        if (y_coord >= 278 && y_coord < 353) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+
+                    end
+                    // 3rd floor elevator
+                    else if (destination[7:4] == 4) begin
+                        if (y_coord >= 240 && y_coord < 315) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 3-4
+                    else if (destination[7:4] == 5) begin
+                        if (y_coord >= 203 && y_coord < 278) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // 4th floor elevator
+                    else if (destination[7:4] == 6) begin 
+                        if (y_coord >= 165 && y_coord < 240) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 4-5
+                    else if (destination[7:4] == 7) begin
+                        if (y_coord >= 128 && y_coord < 203) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end  
+
+                    end
+                    // 5th floor
+                    else if (destination[7:4] == 8) begin
+                        if (y_coord >= 90 && y_coord < 165) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 5-6
+                    else if (destination[7:4] == 9) begin
+                        if (y_coord >= 53 && y_coord < 128) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end  
+
+                    end
+                    // 6th floor elevator
+                    else begin
+                        if (y_coord >= 15 && y_coord < 90) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+                    end
+                end
+                
+                // Stop state
+                else begin
+                    if (x_coord >= 300 && x_coord < 340 && y_coord >= 200 && y_coord < 260) begin
+                        R = 15;
+                        G = 0;
+                        B = 0;
+                    end
+
+                    else begin
+                        R = 0;
+                        G = 0;
+                        B = 0;
+                    end
+                end
+
             end
 
             // Middle outline
@@ -100,9 +283,190 @@ module pixel_gen (
 
             // Right elevator shaft
             else if (x_coord >= 305 && x_coord < 395 && y_coord >= top_bottom_buffer && y_coord < max_vert - top_bottom_buffer) begin
-                R = 8;
-                G = 4;
-                B = 1;
+                if (sim_state == 0) begin
+                    if (y_coord < max_vert - top_bottom_buffer - elevator_height) begin
+                        R = 8;
+                        G = 4; 
+                        B = 1;
+                    end
+                    else begin
+                        R = 4;
+                        G = 4;
+                        B = 4;
+                    end
+                end
+
+                else if (sim_state == 1) begin
+                    // 1st floor elevator
+                    if (destination[7:4] == 0) begin
+                        if (y_coord >= 390 && y_coord < 465) begin
+                            R = 4;
+                            G = 4; 
+                            B = 4;
+                        end
+                        else begin
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+                    end
+
+                    // Half-floor 1-2
+                    else if (destination[7:4] == 1) begin
+                        if (y_coord >= 353 && y_coord < 428) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+                    end
+                    // 2nd floor elevator
+                    else if (destination[7:4] == 2) begin
+                        if (y_coord >= 315 && y_coord < 390) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 2-3
+                    else if (destination[7:4] == 3) begin 
+                        if (y_coord >= 278 && y_coord < 353) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+
+                    end
+                    // 3rd floor elevator
+                    else if (destination[7:4] == 4) begin
+                        if (y_coord >= 240 && y_coord < 315) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 3-4
+                    else if (destination[7:4] == 5) begin
+                        if (y_coord >= 203 && y_coord < 278) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // 4th floor elevator
+                    else if (destination[7:4] == 6) begin 
+                        if (y_coord >= 165 && y_coord < 240) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 4-5
+                    else if (destination[7:4] == 7) begin
+                        if (y_coord >= 128 && y_coord < 203) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end  
+
+                    end
+                    // 5th floor
+                    else if (destination[7:4] == 8) begin
+                        if (y_coord >= 90 && y_coord < 165) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end 
+
+                    end
+                    // Half-floor 5-6
+                    else if (destination[7:4] == 9) begin
+                        if (y_coord >= 53 && y_coord < 128) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin 
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end  
+
+                    end
+                    // 6th floor elevator
+                    else begin
+                        if (y_coord >= 15 && y_coord < 90) begin 
+                            R = 4;
+                            G = 4;
+                            B = 4;
+                        end
+                        else begin
+                            R = 8;
+                            G = 4;
+                            B = 1;
+                        end
+                    end
+                end
+                
+                // Stop state
+                else begin
+                    if (x_coord >= 300 && x_coord < 340 && y_coord >= 200 && y_coord < 260) begin
+                        R = 15;
+                        G = 0;
+                        B = 0;
+                    end
+
+                    else begin
+                        R = 0;
+                        G = 0;
+                        B = 0;
+                    end
+                end
+
+
             end
 
             // Right outline
@@ -162,25 +526,6 @@ module pixel_gen (
                 R = 0;
                 G = 15;
                 B = 0;
-            end
-            
-
-            // Elevator Draw States
-
-            //Initial Draw State
-            if (sim_state == 0) begin
-
-
-            end
-
-            // Normal Sim State
-            else if (sim_state == 1) begin
-
-            end
-
-            // Stop state, needs to be reset with the async reset
-            else begin
-
             end
         end
 

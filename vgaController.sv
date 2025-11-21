@@ -1,7 +1,8 @@
 `default_nettype none
 module vgaController(
     input logic reset,
-    input logic sim_state[1:0],
+    input logic [7:0]destination,
+    input logic [1:0]sim_state,
     output logic hsync, vsync,
     output logic [9:0]horiz_count, vert_count
 );
@@ -89,7 +90,7 @@ module vgaController(
     end
 
     // RGB Output and pixel generation
-    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count))
+    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination))
 
 
 
