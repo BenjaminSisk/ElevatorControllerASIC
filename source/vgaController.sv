@@ -5,7 +5,6 @@ module vgaController(
     //input logic [25:0]people_data,
     input logic [1:0]sim_state,
     output logic hsync, vsync,
-    output logic [9:0]horiz_count, vert_count,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
     // VGA timing specifications
@@ -23,8 +22,8 @@ module vgaController(
     pll_clkGen pll_u0 (.VGA_CLK(pixel_clk));
 
     // Counter values and local enable for the pixel generator
-    logic [9:0] next_horiz_count;
-    logic [9:0] next_vert_count;
+    logic [9:0]horiz_count, vert_count;
+    logic [9:0] next_horiz_count, next_vert_count;
     logic enable;
 
     // Counter values
@@ -58,18 +57,23 @@ module vgaController(
         end
     end
 
-    // Vertical logic
+   // Vertical logic
     always_comb begin 
         // Counter logic
         if ((horiz_count == 0) && (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse)) begin
-            next_vert_count = vert_count + 1;
+            if (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse) begin
+                next_vert_count = vert_count + 1;
+            end
+            else begin
+                next_vert_count = 0;
+            end
         end
         else begin
-            next_vert_count = 0;
+            next_vert_count = vert_count;
         end
 
         // Sync signal logic
-        if ((vert_count > vert_pixel + vert_front_porch) && (vert_count < vert_pixel + vert_front_porch + vert_sync_pulse)) begin
+        if ((vert_count >= vert_pixel + vert_front_porch) && (vert_count < vert_pixel + vert_front_porch + vert_sync_pulse)) begin
             vsync = 1'b0;
         end
         else begin
