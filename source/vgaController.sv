@@ -32,10 +32,6 @@ module vgaController(
         if (reset) begin
             horiz_count <= 0;
             vert_count <= 0;
-            enable <= 0;
-            // Hsync and Vsync are active low signals
-            hsync <= 1'b1;
-            vsync <= 1'b1;
         end
         else begin
             horiz_count <= next_horiz_count;
@@ -46,8 +42,8 @@ module vgaController(
     // Horizontal logic
     always_comb begin
         // Counter logic
-        if (horiz_count < horiz_pixel) begin
-            next_horiz_count = next_horiz_count + 1;
+        if (horiz_count < horiz_pixel + horiz_back_porch + horiz_front_porch + horz_sync_pulse) begin
+            next_horiz_count = horiz_count + 1;
         end
         else begin 
             next_horiz_count = 0;
@@ -66,7 +62,7 @@ module vgaController(
     always_comb begin 
         // Counter logic
         if ((horiz_count == 0) && (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse)) begin
-            next_vert_count = next_vert_count + 1;
+            next_vert_count = vert_count + 1;
         end
         else begin
             next_vert_count = 0;
