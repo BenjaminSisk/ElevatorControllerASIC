@@ -1,6 +1,9 @@
 `default_nettype none
-module vgatest(
+module vgaController(
     input logic reset,
+    input logic [7:0]destination,
+    input logic [25:0]people_data,
+    input logic [1:0]sim_state,
     output logic hsync, vsync,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
@@ -14,16 +17,14 @@ module vgatest(
     localparam horiz_back_porch = 48;
     localparam vert_back_porch = 33;
 
-    //Coordinates
-    logic[9:0]horiz_count, vert_count;
 
     // PLL Instantiation
     logic pixel_clk;
     pll_clkGen pll_u0 (.VGA_CLK(pixel_clk));
 
     // Counter values and local enable for the pixel generator
-    logic [9:0] next_horiz_count;
-    logic [9:0] next_vert_count;
+    logic [9:0] next_horiz_count, next_vert_count;
+    logic [9:0] horiz_count, vert_count;
     logic enable;
 
     // Counter values
