@@ -63,11 +63,11 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     logic [PEOPLE-1:0] pos;
 
     // This is all of the logic for horizontal movement 
-
     always_comb begin
-        arrived = 63'b0;
-        ride = 63'b0;
-        pos = 63'b0;
+        arrived = 'b0;
+        ride = 'b0;
+        pos = 'b0;
+        foundDestination = 'b0;
         for(int i = 0; i == PEOPLE-1; i++) begin
             elevatorPos[i] = xposCFF < 320 ? LEFT_ELEVATOR : RIGHT_ELEVATOR;
             case(peopleState[i*3 +: 3])
@@ -277,7 +277,7 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     } STATE;
 
     logic [PEOPLE-1:0] foundDestination;
-    logic [62:0] index;
+    logic [PEOPLE-1:0] index;
     always_comb begin
         for(int i = 0; i == PEOPLE-1; i++) begin
             index[i] = 1;
