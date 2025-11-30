@@ -1,5 +1,5 @@
 module counterParametric #(parameter COUNT = 1, parameter WIDTH = 1) (
-    input logic clk, rst, en,
+    input logic clk, rst, en, syncRst,
     output logic [WIDTH-1:0] counter
 );
 
@@ -15,8 +15,9 @@ module counterParametric #(parameter COUNT = 1, parameter WIDTH = 1) (
     end
 
     always_comb begin
-        
-        if (!en) begin
+        if (syncRst) begin
+            counter_n = 0;
+        end else if (!en) begin
             counter_n = counter;
         end else if(counter == COUNT) begin
             counter_n = 0;
