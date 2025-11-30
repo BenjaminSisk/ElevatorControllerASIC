@@ -2,11 +2,14 @@
 module vgaController(
     input logic reset,
     input logic [7:0]destination,
-    //input logic [25:0]people_data,
+    input logic [25:0]people_data,
     input logic [1:0]sim_state,
     output logic hsync, vsync,
     output logic [9:0]horiz_count, vert_count,
-    output logic [3:0]R, [3:0]G, [3:0]B
+    output logic [3:0] R,
+    output logic [3:0] G,
+    output logic [3:0] B
+
 );
     // VGA timing specifications
     localparam horiz_pixel = 640;
@@ -32,10 +35,10 @@ module vgaController(
         if (reset) begin
             horiz_count <= 0;
             vert_count <= 0;
-            enable <= 0;
-            // Hsync and Vsync are active low signals
-            hsync <= 1'b1;
-            vsync <= 1'b1;
+            //enable <= 0;
+            // Hsync and Vsync are active low signals--must only be assigned in the always_comb
+            //hsync <= 1'b1;
+            //vsync <= 1'b1;
         end
         else begin
             horiz_count <= next_horiz_count;
@@ -47,7 +50,7 @@ module vgaController(
     always_comb begin
         // Counter logic
         if (horiz_count < horiz_pixel) begin
-            next_horiz_count = next_horiz_count + 1;
+            next_horiz_count = horiz_count + 1;
         end
         else begin 
             next_horiz_count = 0;
@@ -66,7 +69,7 @@ module vgaController(
     always_comb begin 
         // Counter logic
         if ((horiz_count == 0) && (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse)) begin
-            next_vert_count = next_vert_count + 1;
+            next_vert_count = vert_count + 1;
         end
         else begin
             next_vert_count = 0;
