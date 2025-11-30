@@ -15,8 +15,8 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     localparam LEFT_ELEVATOR = 1'b0;
     localparam RIGHT_ELEVATOR = 1'b1;
  
-    // Flip flop for destination x position (one of 12 doors), 2 bits
-    logic [2*PEOPLE-1:0] xposDFF, xposDFF_n;
+    // Flip flop for destination x position (one of 12 doors), 1 bit
+    logic [PEOPLE-1:0] xposDFF, xposDFF_n;
     always_ff @(posedge clk, posedge rst) begin
         if (rst) begin
              xposDFF <= 'b0;
@@ -26,7 +26,7 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     end
 
     always_comb begin 
-        xposDFF_n = (xposDFF_e & {PEOPLE{randy[1:0]}} ) | (~xposDFF_e & xposDFF);
+        xposDFF_n = (xposDFF_e & {PEOPLE{randy[0]}} ) | (~xposDFF_e & xposDFF);
     end
 
     // Flip flop for destination y position (one of 12 doors), 2 bits
@@ -40,7 +40,7 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     end
 
     always_comb begin 
-        yposDFF_n = (yposDFF_e & {PEOPLE{randy[3:2]}} ) | (~yposDFF_e & yposDFF);
+        yposDFF_n = (yposDFF_e & {PEOPLE{randy[2:1]}} ) | (~yposDFF_e & yposDFF);
     end
 
     // Flip flop for current x position, 10 bits
@@ -60,34 +60,39 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     logic [PEOPLE-1:0] elevatorPos;
     logic [PEOPLE-1:0] arrived;
     logic [PEOPLE-1:0] ride;
+    logic [PEOPLE-1:0] pos;
 
     // This is all of the logic for horizontal movement 
+
     always_comb begin
+        arrived = 63'b0;
+        ride = 63'b0;
+        pos = 63'b0;
         for(int i = 0; i == PEOPLE-1; i++) begin
-            elevatorPos[i] = xposCFF < 240 ? LEFT_ELEVATOR : RIGHT_ELEVATOR;
+            elevatorPos[i] = xposCFF < 320 ? LEFT_ELEVATOR : RIGHT_ELEVATOR;
             case(peopleState[i*3 +: 3])
                 COMING: 
                     if (twentyCount == 20'b1) begin
                         if (elevatorPos[i] == LEFT_ELEVATOR) begin
-                            xposCFF_n[i*12 +: 12] = xposCFF[i*12 +: 12] + {10'd0, simSpeed};
-                            if (xposCFF[i*12 +: 12] > 220) begin // - elevatorDFF[i*6 +: 5]
-                                xposCFF_n[i*12 +: 12] = 220; // - elevatorDFF[i*6 +: 5]
+                            xposCFF_n[i*10 +: 10] = xposCFF[i*10 +: 10] + {8'd0, simSpeed};
+                            if (xposCFF[i*10 +: 10] > 300) begin // - elevatorDFF[i*6 +: 5]
+                                xposCFF_n[i*10 +: 10] = 300; // - elevatorDFF[i*6 +: 5]
                                 arrived[i] = 1;
                             end
                         end else begin
-                            xposCFF_n[i*12 +: 12] = xposCFF[i*12 +: 12] - {10'd0, simSpeed};
-                            if (xposCFF_n[i*12 +: 12] < 260) begin // + elevatorDFF[i*6 +: 5]
-                                xposCFF_n[i*12 +: 12] = 260; //  + elevatorDFF[i*6 +: 5]
+                            xposCFF_n[i*10 +: 10] = xposCFF[i*10 +: 10] - {8'd0, simSpeed};
+                            if (xposCFF_n[i*10 +: 10] < 340) begin // + elevatorDFF[i*6 +: 5]
+                                xposCFF_n[i*10 +: 10] = 340; //  + elevatorDFF[i*6 +: 5]
                                 arrived[i] = 1;
                             end
                         end
                     end else begin
-                        xposCFF_n[i*12 +: 12] = xposCFF[i*12 +: 12];
+                        xposCFF_n[i*10 +: 10] = xposCFF[i*10 +: 10];
                     end
                 WAITING:
                 begin
                     floorsRequested = 12'b0;
-                    if (xposCFF < 240) begin
+                    if (xposCFF < 320) begin
                         case(yposCFF[i*3 +: 3])
                             3'd0: 
                                 if (elevatorStates[2:0] == 3'd0) begin
@@ -175,22 +180,25 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
             end
             RIDING: xposCFF_n = xposCFF; 
             LEAVING: 
-            if (twentyCount == 20'b1) begin
-                if (xposCFF[i*12 +: 12] < xposDFF[i*12 +: 12]) begin
-                    xposCFF_n[i*12 +: 12] = xposCFF[i*12 +: 12] + {10'd0, simSpeed};
-                    if (xposCFF_n[i*12 +: 12] > xposDFF[i*12 +: 12] ) begin 
-                        xposCFF_n[i*12 +: 12] = xposDFF[i*12 +: 12]; 
-                        foundDestination[i] = 1;
+            begin
+                pos[i*10+:10] = xposDFF[i] ? 10'd45 : 10'd595;
+                if (twentyCount == 20'b1) begin
+                    if (xposCFF[i*10 +: 10] < pos[i*10+:10]) begin
+                        xposCFF_n[i*10 +: 10] = xposCFF[i*10 +: 10] + {8'd0, simSpeed};
+                        if (xposCFF_n[i*10 +: 10] > pos[i*10+:10]) begin 
+                            xposCFF_n[i*10 +: 10] = pos[i*10+:10]; 
+                            foundDestination[i] = 1;
+                        end
+                    end else begin
+                        xposCFF_n[i*10 +: 10] = xposCFF[i*10 +: 10] - {8'd0, simSpeed};
+                        if (xposCFF_n[i*10 +: 10] < pos[i*10+:10] ) begin 
+                            xposCFF_n[i*10 +: 10] = pos[i*10+:10] ; 
+                            foundDestination[i] = 1;
+                        end
                     end
                 end else begin
-                    xposCFF_n[i*12 +: 12] = xposCFF[i*12 +: 12] - {10'd0, simSpeed};
-                    if (xposCFF_n[i*12 +: 12] < xposDFF[i*12 +: 12] ) begin 
-                        xposCFF_n[i*12 +: 12] = xposDFF[i*12 +: 12] ; 
-                        foundDestination[i] = 1;
-                    end
+                    xposCFF_n[i*10 +: 10] = xposCFF[i*10 +: 10];
                 end
-            end else begin
-                xposCFF_n[i*12 +: 12] = xposCFF[i*12 +: 12];
             end
             XPOS: xposCFF_n[i*10 +: 10] = randy[9:0];
             default: begin end
@@ -215,7 +223,7 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
             case(peopleState[i*3 +: 3]) 
                 RIDING: 
                 begin
-                    if (xposCFF[i*12 +: 12] < 240) begin
+                    if (xposCFF[i*10 +: 10] < 320) begin
                         yposCFF_n[i*3 +: 3] = elevatorPos[2:0];
                     end else begin 
                         yposCFF_n[i*3 +: 3] = elevatorPos[5:3];
@@ -224,13 +232,13 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
                         dropoff[i] = 1; 
                     end
                 end
-                OTHER: yposCFF_n[i*3 +: 3] = yposCFF_e[i] ? randy[6:4] : yposCFF[i*3 +: 3];
+                OTHER: yposCFF_n[i*3 +: 3] = yposCFF_e[i] ? randy[5:3] : yposCFF[i*3 +: 3];
                 default: yposCFF_n = yposCFF;
             endcase
         end
     end
 
-    logic[2*PEOPLE-1:0] xposDFF_e;
+    logic[PEOPLE-1:0] xposDFF_e;
     logic [PEOPLE-1:0] yposCFF_e;
     logic [2*PEOPLE-1:0] yposDFF_e;
 
@@ -274,11 +282,11 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
         for(int i = 0; i == PEOPLE-1; i++) begin
             index[i] = 1;
             case(peopleState[3*i-:3]) 
-                NOTGENERATED: peopleState_n[3*i-:3] = index[counter[7:2]] & people[i] ? COLOR : NOTGENERATED;
+                NOTGENERATED: peopleState_n[3*i-:3] = index[counter[7:2]] && people[i] ? COLOR : NOTGENERATED;
                 COLOR: peopleState_n[3*i-:3] = XPOS;
                 XPOS: begin
                     peopleState_n[3*i-:3] = OTHER;
-                    xposDFF_e[2*i+:2] = 1;
+                    xposDFF_e[i] = 1;
                 end
                 OTHER: 
                 begin
