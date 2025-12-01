@@ -6,7 +6,6 @@ output logic [3:0] buttonMux
 );
 
 logic [3:0] newRow, newRow_n, oldRow, oldRow_n, oldestRow, oldestRow_n;
-logic [1:0] columnDebounce;
 always_ff @(posedge clk, posedge rst) begin
     if (rst) begin
         newRow <= 4'b0;
@@ -34,7 +33,7 @@ end
 
 always_comb begin 
     if (en) begin 
-        oldRow_n = row;
+        oldRow_n = newRow;
     end else begin
         oldRow_n = 0;
     end
