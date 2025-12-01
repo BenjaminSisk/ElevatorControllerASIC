@@ -72,7 +72,7 @@ module vgaController_tb();
         #50000;
 
         $display("Simulation finished.");
-        $stop;
+        $finish;
     end
 
 endmodule

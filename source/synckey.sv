@@ -7,9 +7,10 @@ module synckey
     output logic [3:0] columns
 );
 
-    logic [5:0] columnTimer;
+    logic [5:0] columnTimer; //bits 0-3 previously unused
     logic [1:0] columnDemux;
     logic [15:0] encoderIn;
+
 
     counterParametric #(.COUNT(6'd63), .WIDTH(6)) a
     (
@@ -28,7 +29,7 @@ module synckey
             default: columns = 4'b1111;
         endcase
     end
-
+    //each debouncer module is enabled when its column is selected (3-0)
     debouncing d0
     (
         .clk(clk), .rst(rst), .en(columnDemux[0] && columnDemux[1]), .row(row), .buttonMux(encoderIn[3:0])
