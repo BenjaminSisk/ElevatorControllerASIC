@@ -11,7 +11,7 @@ module top (
     pll_clkGen u2 (.VGA_CLK(pixel_CLK));
 
 
-    clkDivider #(.COUNT(1024'b1), .WIDTH(1024)) divide 
+    clkDivider #(.COUNT(1024'b1), .WIDTH(10)) divide 
     (
         .clk(pixel_CLK), .rst(1'b0), .clkOut(clk)
     );
