@@ -4,7 +4,7 @@ module top (
     ICE_28, ICE_31, ICE_32, ICE_34, ICE_36, ICE_38);
 
 
-    logic [15:0] output_dest;
+    logic [7:0] output_dest;
     logic pixel_CLK;
     logic clk;
 
