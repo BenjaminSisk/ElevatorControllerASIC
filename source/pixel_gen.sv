@@ -3,8 +3,12 @@ module pixel_gen (
     input logic enable,
     input logic [7:0] destination,
     input logic [1:0]sim_state,
-    input logic [9:0]x_coord, [9:0]y_coord,
-    output logic [3:0]R, [3:0]G, [3:0]B
+    input logic [25:0]people_data,
+    input logic [9:0] x_coord,
+    input logic [9:0] y_coord,
+    output logic [3:0] R,
+    output logic [3:0] G,
+    output logic [3:0] B
 );
     // Constant drawing parameters
     localparam max_horiz = 640;
@@ -79,7 +83,13 @@ module pixel_gen (
             end
 
             // Left outline
-            else if (x_coord >= 195 && x_coord < 205 && y_coord >= top_bottom_buffer & y_coord < max_vert - top_bottom_buffer) begin
+            else if (
+                (x_coord >= 195) &&
+                (x_coord < 205) &&
+                (y_coord >= top_bottom_buffer) &&
+                (y_coord <  max_vert - top_bottom_buffer)
+            ) begin
+                //added logical and to fix synthesis error
                 R = 0;
                 G = 0;
                 B = 0;
