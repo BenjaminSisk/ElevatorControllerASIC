@@ -14,6 +14,11 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     output logic [11:0] floorDestinations
 );
 
+/*
+    peopleController #(.PEOPLE(7), .WIDTH(6)) a ( .clk(clk), .rst(rst), .simState(simState), .simSpeed(simSpeed), .people(people), .elevatorStates(8'b1), .randy(10'b1), .peopleGenerated(peopleGenerated),
+    .xposCFF(xposCFF), .yposCFF(yposCFF), .floorsRequested(floorsRequested), .floorDestinations(floorDestinations));
+*/
+
     localparam LEFT_ELEVATOR = 1'b0;
     localparam RIGHT_ELEVATOR = 1'b1;
  
