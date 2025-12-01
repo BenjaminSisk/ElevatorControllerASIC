@@ -20,7 +20,7 @@ module DirectionScoringSystem(
     logic en;
     logic [5:0] floors_triggered1, floors_triggered2;
     always_comb begin
-        {floors_triggered1, floors_triggered2} = FloorDestinations | FloorsRequested;
+        {floors_triggered2, floors_triggered1} = FloorDestinations | FloorsRequested;
         en = (simState == SIM);
     end
 
