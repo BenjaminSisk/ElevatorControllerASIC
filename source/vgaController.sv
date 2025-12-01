@@ -91,6 +91,6 @@ module vgaController(
         end
     end    
     
-    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination), .R(R), .B(B), .G(G), .people_data(people_data));
+    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination), .R(R), .B(B), .G(G));
 
 endmodule
