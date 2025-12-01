@@ -7,7 +7,7 @@ module top (
     logic [7:0] output_dest;
     logic CLK;
 
-    pll_clkGen u2 (.VGA_CLK(CLK))
+    pll_clkGen u2 (.VGA_CLK(CLK));
 
     counterParametric #(.COUNT(8'b1010_1010), .WIDTH(8)) output_stuff
     (
