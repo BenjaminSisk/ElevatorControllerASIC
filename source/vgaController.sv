@@ -3,7 +3,7 @@ module vgaController(
     input logic reset,
     input logic [7:0]destination,
     input logic [1:0]sim_state,
-    input logic pixel_clk
+    input logic pixel_clk,
     output logic hsync, vsync,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
