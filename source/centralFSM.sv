@@ -8,6 +8,18 @@ module centralFSM
     output logic [5:0] people
 );
 
+     logic [7:0] elevatorStates;
+     logic [9:0] randy;
+     logic [3-1:0] peopleGenerated;
+    // logic [12*3-1:0] colorFF;
+     logic [10*3-1:0] xposCFF;
+     logic [3*4-1:0] yposCFF;
+     logic [11:0] floorsRequested;
+     logic [11:0] floorDestinations;
+
+    peopleController #(.PEOPLE(7), .WIDTH(3)) a ( .clk(clk), .rst(rst), .simState(simState), .simSpeed(simSpeed), .people(people), .elevatorStates(8'b1), .randy(10'b1), .peopleGenerated(peopleGenerated),
+    .xposCFF(xposCFF), .yposCFF(yposCFF), .floorsRequested(floorsRequested), .floorDestinations(floorDestinations));
+
     typedef enum logic [1:0] {
         START = 2'b0,
         SIM = 2'b1, 
