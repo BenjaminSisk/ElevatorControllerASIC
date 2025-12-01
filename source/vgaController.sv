@@ -50,7 +50,7 @@ module vgaController(
         end
 
         // Sync signal logic
-        if ((horiz_count >= horiz_pixel + horiz_front_porch) && (horiz_count < horiz_pixel + horiz_front_porch + horz_sync_pulse)) begin
+        if ((horiz_count > horiz_pixel + horiz_front_porch) && (horiz_count < horiz_pixel + horiz_front_porch + horz_sync_pulse)) begin
             hsync = 1'b0;
         end
         else begin

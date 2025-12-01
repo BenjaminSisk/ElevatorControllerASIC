@@ -3,7 +3,7 @@ module pixel_gen (
     input logic enable,
     input logic [7:0] destination,
     input logic [1:0]sim_state,
-    //input logic [25:0]people_data,
+    input logic [25:0]people_data,
     input logic [9:0]x_coord, [9:0]y_coord,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
@@ -23,15 +23,15 @@ module pixel_gen (
             // Side sky (side buffers)
             if ((x_coord < side_buffer) || (x_coord >= max_horiz - side_buffer && x_coord < max_horiz) && (y_coord < max_vert - top_bottom_buffer)) begin
                 R = 2;
-                G = 15;
-                B = 8;
+                G = 8;
+                B = 15;
             end
 
             // Top sky (top buffer)
             else if (y_coord < top_bottom_buffer) begin
                 R = 2;
-                G = 15;
-                B = 8;
+                G = 8;
+                B = 15;
             end
 
             // Left side of the building (left side of elevator shafts)
