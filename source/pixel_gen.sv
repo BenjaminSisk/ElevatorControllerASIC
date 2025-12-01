@@ -105,7 +105,7 @@ module pixel_gen (
 
                 else if (sim_state == 1) begin
                     // 1st floor elevator
-                    if (x_coord == xpos_person && y_coord == ypos_person) begin
+                    if (x_coord > xpos_person - 2 && x_coord < xpos_person + 2 && y_coord > ypos_person - 2 && y_coord < ypos_person + 2) begin
                         R = 15;
                         G = 0;
                         B = 0;
