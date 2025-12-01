@@ -3,6 +3,7 @@ module vgaController(
     input logic reset,
     input logic [7:0]destination,
     input logic [1:0]sim_state,
+    input logic pixel_clk
     output logic hsync, vsync,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
@@ -16,10 +17,6 @@ module vgaController(
     localparam horiz_back_porch = 48;
     localparam vert_back_porch = 33;
 
-
-    // PLL Instantiation
-    logic pixel_clk;
-    pll_clkGen pll_u0 (.VGA_CLK(pixel_clk));
 
     // Counter values and local enable for the pixel generator
     logic [9:0] next_horiz_count, next_vert_count;
