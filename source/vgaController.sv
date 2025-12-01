@@ -2,16 +2,10 @@
 module vgaController(
     input logic reset,
     input logic [7:0]destination,
-    input logic [25:0]people_data,
     input logic [1:0]sim_state,
-    output logic hsync, 
-    output logic vsync,
-    output logic [9:0] horiz_count, 
-    output logic [9:0] vert_count,
-    output logic [3:0] R,
-    output logic [3:0] G,
-    output logic [3:0] B
-
+    input logic pixel_clk,
+    output logic hsync, vsync,
+    output logic [3:0]R, [3:0]G, [3:0]B
 );
     // VGA timing specifications
     localparam horiz_pixel = 640;
@@ -23,10 +17,6 @@ module vgaController(
     localparam horiz_back_porch = 48;
     localparam vert_back_porch = 33;
 
-
-    // PLL Instantiation
-    logic pixel_clk;
-    pll_clkGen pll_u0 (.VGA_CLK(pixel_clk));
 
     // Counter values and local enable for the pixel generator
     logic [9:0] next_horiz_count, next_vert_count;
@@ -59,7 +49,7 @@ module vgaController(
         end
 
         // Sync signal logic
-        if ((horiz_count >= horiz_pixel + horiz_front_porch) && (horiz_count < horiz_pixel + horiz_front_porch + horz_sync_pulse)) begin
+        if ((horiz_count > horiz_pixel + horiz_front_porch) && (horiz_count < horiz_pixel + horiz_front_porch + horz_sync_pulse)) begin
             hsync = 1'b0;
         end
         else begin
@@ -96,6 +86,6 @@ module vgaController(
         end
     end    
     
-    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination), .R(R), .B(B), .G(G), .people_data(people_data));
+    pixel_gen pixelu0 (.enable(enable), .sim_state(sim_state), .x_coord(horiz_count), .y_coord(vert_count), .destination(destination), .R(R), .B(B), .G(G));
 
 endmodule
