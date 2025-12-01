@@ -3,10 +3,11 @@ module vgaController(
     input logic reset,
     input logic [7:0]destination,
     input logic [25:0]people_data,
-    input logic [25:0]people_data,
     input logic [1:0]sim_state,
-    output logic hsync, vsync,
-    output logic [9:0]horiz_count, vert_count,
+    output logic hsync, 
+    output logic vsync,
+    output logic [9:0] horiz_count, 
+    output logic [9:0] vert_count,
     output logic [3:0] R,
     output logic [3:0] G,
     output logic [3:0] B
@@ -29,7 +30,6 @@ module vgaController(
 
     // Counter values and local enable for the pixel generator
     logic [9:0] next_horiz_count, next_vert_count;
-    logic [9:0] horiz_count, vert_count;
     logic enable;
 
     // Counter values
