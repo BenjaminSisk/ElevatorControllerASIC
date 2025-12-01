@@ -23,22 +23,22 @@ always_comb begin
         //priority encoder to get the left elevator top floor
     casez(floors_triggered) 
         6'b00_0001: top_floor = 0;
-        6'b00_001?: top_floor = 1;
-        6'b00_01??: top_floor = 2;
-        6'b00_1???: top_floor= 3;
-        6'b01_????: top_floor= 4;
-        6'b1?_????: top_floor= 5;
+        6'b00_001?: top_floor = 2;
+        6'b00_01??: top_floor = 4;
+        6'b00_1???: top_floor= 6;
+        6'b01_????: top_floor= 8;
+        6'b1?_????: top_floor= 10;
         default: top_floor = 7; //no floors triggered
     endcase
 
     //priority encoder to get the right elevator bottom floor
     casez(floors_triggered)
         6'b00_0001: bottom_floor = 0;
-        6'b00_001?: bottom_floor = 1; 
-        6'b00_01??: bottom_floor = 2;
-        6'b00_1???: bottom_floor = 3;
-        6'b01_????: bottom_floor = 4;
-        6'b1?_????: bottom_floor = 5;
+        6'b00_001?: bottom_floor = 2; 
+        6'b00_01??: bottom_floor = 4;
+        6'b00_1???: bottom_floor = 6;
+        6'b01_????: bottom_floor = 8;
+        6'b1?_????: bottom_floor = 10;
         default: bottom_floor = 7; //no floors triggered
     endcase
 end
@@ -84,12 +84,14 @@ always_comb begin
         end
 
         //floor movement logic        
-        if (top_floor == floor) begin
-            direction_next = ~direction; 
-            floor_next = top_floor - 1;
-        end else if (bottom_floor == floor) begin
-            direction_next = ~direction; 
-            floor_next = top_floor + 1;
+        if (top_floor <= floor) begin
+            direction_next = 0; 
+            floor_next = (bottom_floor == floor) ? floor : floor - 1;
+            floor_next = (floor_next == 4'hF && top_floor != floor) ? 0 : floor_next;
+        end else if (bottom_floor >= floor) begin
+            direction_next = 1; 
+            floor_next = (top_floor == floor) ? floor : floor + 1;
+            floor_next = (floor_next == 0 && top_floor != floor) ? 4'hA : floor_next;
         end else begin
             floor_next = direction ? floor + 1 : floor - 1;
         end
