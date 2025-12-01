@@ -3,7 +3,8 @@ module pixel_gen (
     input logic enable,
     input logic [7:0] destination,
     input logic [1:0]sim_state,
-    input logic [25:0]people_data,
+    input logic [9:0]xpos_person,
+    input logic [9:0]ypos_person,
     input logic [9:0]x_coord, [9:0]y_coord,
     output logic [3:0]R, [3:0]G, [3:0]B
 );
@@ -104,6 +105,12 @@ module pixel_gen (
 
                 else if (sim_state == 1) begin
                     // 1st floor elevator
+                    if (x_coord == xpos_person && y_coord == ypos_person) begin
+                        R = 15;
+                        G = 0;
+                        B = 0;
+                    end
+
                     if (destination[7:4] == 0) begin
                         if (y_coord >= 390 && y_coord < 465) begin
                             R = 4;
