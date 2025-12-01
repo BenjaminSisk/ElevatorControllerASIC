@@ -6,14 +6,17 @@ module top (
     ICE_28, ICE_31, ICE_32, ICE_34, ICE_36, ICE_38,
 
 );
+    logic [7:0] output_dest
 
-    logic [1:0] sim;
-    logic [7:0] output_dest;
+    counterParametric #(.COUNT(8'b1010_1010), .WIDTH(8)) output
+    (
+        .counter(output_dest), .clk(CLK), .rst(1'b0), .en(1'b1)
+    );
 
 
     vgaController vgacon(.reset(1'b0), .hsync(ICE_36), .vsync(ICE_38),
         .R({ICE_44_G6, ICE_45, ICE_46, ICE_47}), .B({ICE_48, ICE_2, ICE_3, ICE_4}), 
-        .G({ICE_28,ICE_31,ICE_32,ICE_34}), .sim_state(sim), .destination(output_dest)
+        .G({ICE_28,ICE_31,ICE_32,ICE_34}), .sim_state(2'b01), .destination(output_dest)
     );
 
 
