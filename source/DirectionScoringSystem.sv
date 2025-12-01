@@ -1,5 +1,5 @@
 `default_nettype none
-module DirectionScoringSystem3(
+module DirectionScoringSystem(
     input logic clk, rst,
     input logic [1:0] simState,
     input logic [11:0] FloorDestinations, //bits 0-5 represent left elevator, floors 6-11 represent right elevator
