@@ -1,0 +1,55 @@
+$date
+	Mon Dec  1 12:16:07 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module top_tb $end
+$var wire 1 ! ICE_42 $end
+$var wire 1 " ICE_36 $end
+$var wire 1 # ICE_32 $end
+$var wire 1 $ ICE_28 $end
+$var reg 1 % ICE_31 $end
+$var reg 1 & ICE_34 $end
+$var reg 1 ' ICE_38 $end
+$var reg 1 ( ICE_43 $end
+$scope module DUT $end
+$var wire 1 % ICE_31 $end
+$var wire 1 & ICE_34 $end
+$var wire 1 ' ICE_38 $end
+$var wire 1 ( ICE_43 $end
+$var reg 1 $ ICE_28 $end
+$var reg 1 # ICE_32 $end
+$var reg 1 " ICE_36 $end
+$var reg 1 ! ICE_42 $end
+$upscope $end
+$scope task show $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+0(
+0'
+0&
+0%
+x$
+x#
+x"
+x!
+$end
+#10000
+1(
+1'
+1&
+1%
+#20000
+0'
+0%
+#120000

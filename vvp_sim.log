@@ -1,20 +1,36 @@
-VCD info: dumpfile vga_test.vcd opened for output.
-[LEFT ELEVATOR] floor=1  time=220000
-[LEFT ELEVATOR] floor=2  time=50220000
-[LEFT ELEVATOR] floor=3  time=100220000
-[LEFT ELEVATOR] floor=4  time=150220000
-[LEFT ELEVATOR] floor=5  time=200220000
-[LEFT ELEVATOR] floor=6  time=250220000
-[RIGHT ELEVATOR] floor=1  time=300220000
-[RIGHT ELEVATOR] floor=2  time=350220000
-[RIGHT ELEVATOR] floor=3  time=400220000
-[RIGHT ELEVATOR] floor=4  time=450220000
-[RIGHT ELEVATOR] floor=5  time=500220000
-[RIGHT ELEVATOR] floor=6  time=550220000
-[STOP MODE TEST] time=600220000
-Simulation finished.
-testbench/vgaController_tb.sv:75: $stop called at 650220000 (1ps)
-** VVP Stop(0) **
-** Flushing output streams.
-** Current simulation time is 650220000 ticks.
-** Continue **
+VCD info: dumpfile dump.vcd opened for output.
+VCD warning: testbench/debouncing_tb.sv:37: $dumpfile called after $dumpvars started,
+                                            using existing file (dump.vcd).
+[25000] After reset | en=0 row=0000 -> buttonMux=0000
+[80000] EN=0: Output must remain zero | en=0 row=0100 -> buttonMux=0000
+[90000] EN=0: Output must remain zero | en=0 row=0001 -> buttonMux=0000
+[100000] EN=0: Output must remain zero | en=0 row=1001 -> buttonMux=0000
+[110000] EN=0: Output must remain zero | en=0 row=0011 -> buttonMux=0000
+[120000] EN=0: Output must remain zero | en=0 row=1101 -> buttonMux=0000
+
+ TEST 2: Rising edge on row[0] -- 
+[190000] Pipeline flush 1 | en=1 row=0000 -> buttonMux=0000
+[200000] Pipeline flush 2 | en=1 row=0000 -> buttonMux=0000
+[210000] Start: no key | en=1 row=0000 -> buttonMux=0000
+[220000] Row0 rises - expect buttonMux = 0001 | en=1 row=0001 -> buttonMux=0000
+[230000] Hold → expect buttonMux = 0000 | en=1 row=0001 -> buttonMux=0000
+
+ TEST 3: Rising edge on row[3] -- 
+[240000] Reset rows | en=1 row=0000 -> buttonMux=0001
+[250000] Pipeline flush 3 | en=1 row=0000 -> buttonMux=0000
+[260000] Pipeline flush 4 | en=1 row=0000 -> buttonMux=0000
+[270000] Row3 rises - expect buttonMux = 1000 | en=1 row=1000 -> buttonMux=0000
+[280000] Hold → expect buttonMux = 0000 | en=1 row=1000 -> buttonMux=0000
+
+ TEST 4: Bounce simulation -- 
+[290000] Idle | en=1 row=0000 -> buttonMux=1000
+[300000] Bounce high | en=1 row=0100 -> buttonMux=0000
+[310000] Bounce low | en=1 row=0000 -> buttonMux=0000
+[320000] Final high - expect buttonMux = 0100 | en=1 row=0100 -> buttonMux=0100
+
+ TEST 5: Disable during row change -- 
+[330000] EN=0: Output forced to 0 | en=0 row=1111 -> buttonMux=0000
+[340000] Still EN=0: Output forced to 0 | en=0 row=0001 -> buttonMux=0000
+
+Simulation complete.
+testbench/debouncing_tb.sv:112: $finish called at 340000 (1ps)

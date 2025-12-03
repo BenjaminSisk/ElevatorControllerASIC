@@ -3,21 +3,30 @@ module synckey
     input logic clk, rst,
     input logic [3:0] row,
     output logic [3:0] buttonBus,
-    output logic pressed
+    output logic pressed,
+    output logic [3:0] columns
 );
 
     logic [5:0] columnTimer;
     logic [1:0] columnDemux;
     logic [15:0] encoderIn;
+
     counterParametric #(.COUNT(6'd63), .WIDTH(6)) a
     (
-        .clk(clk), .rst(rst), .counter(columnTimer), .en(1), .syncRst(1'b0)
+        .clk(clk), .rst(rst), .counter(columnTimer), .en(1)
     );
 
     // For 16 clock cycles, the button matrix will search for a positive edge for a column, then switch
     // to a different column (may need to be increased significantly)
     always_comb begin
         columnDemux = columnTimer[5:4];
+        case(columnDemux)
+            0: columns = 4'b0001;
+            1: columns = 4'b0010;
+            2: columns = 4'b0100;
+            3: columns = 4'b1000;
+            default: columns = 4'b1111;
+        endcase
     end
 
     debouncing d0
