@@ -35,9 +35,23 @@ always_comb begin
     if (en) begin 
         oldRow_n = newRow;
     end else begin
-        newRow    <= 4'b0;
-        oldRow    <= 4'b0;
+        oldRow_n = 4'b0;
+    end
+end
+
+always_ff @(posedge clk, posedge rst) begin
+    if (rst) begin
         oldestRow <= 4'b0;
+    end else begin
+        oldestRow <= oldestRow_n;
+    end
+end
+
+always_comb begin 
+    if (en) begin 
+        oldestRow_n = oldRow;
+    end else begin
+        oldestRow_n = 4'b0;
     end
 end
 
