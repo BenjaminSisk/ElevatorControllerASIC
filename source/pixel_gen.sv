@@ -79,7 +79,7 @@ module pixel_gen (
             end
 
             // Left outline
-            else if (x_coord >= 195 && x_coord < 205 && y_coord >= top_bottom_buffer & y_coord < max_vert - top_bottom_buffer) begin
+            else if (x_coord >= 195 && x_coord < 205 && y_coord >= top_bottom_buffer && y_coord < max_vert - top_bottom_buffer) begin
                 R = 0;
                 G = 0;
                 B = 0;
