@@ -7,7 +7,6 @@ module centralFSM
     output logic [2:0] simSpeed, 
     output logic [5:0] people
 );
-
     typedef enum logic [1:0] {
         START = 2'b0,
         SIM = 2'b1, 

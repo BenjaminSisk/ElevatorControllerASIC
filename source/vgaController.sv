@@ -20,7 +20,6 @@ module vgaController(
 
     // Counter values and local enable for the pixel generator
     logic [9:0] next_horiz_count, next_vert_count;
-    logic [9:0] horiz_count, vert_count;
     logic enable;
 
     // Counter values
@@ -28,6 +27,10 @@ module vgaController(
         if (reset) begin
             horiz_count <= 0;
             vert_count <= 0;
+            //enable <= 0;
+            // Hsync and Vsync are active low signals--must only be assigned in the always_comb
+            //hsync <= 1'b1;
+            //vsync <= 1'b1;
         end
         else begin
             horiz_count <= next_horiz_count;
@@ -38,7 +41,7 @@ module vgaController(
     // Horizontal logic
     always_comb begin
         // Counter logic
-        if (horiz_count < horiz_pixel + horz_sync_pulse + horiz_front_porch + horiz_back_porch) begin
+        if (horiz_count < horiz_pixel) begin
             next_horiz_count = horiz_count + 1;
         end
         else begin 
@@ -57,13 +60,8 @@ module vgaController(
     // Vertical logic
     always_comb begin 
         // Counter logic
-        if (horiz_count == 0) begin
-            if (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse) begin
-                next_vert_count = vert_count + 1;
-            end
-            else begin
-                next_vert_count = 0;
-            end
+        if ((horiz_count == 0) && (vert_count < vert_pixel + vert_back_porch + vert_front_porch + vert_sync_pulse)) begin
+            next_vert_count = vert_count + 1;
         end
         else begin
             next_vert_count = vert_count;

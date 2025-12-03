@@ -11,7 +11,7 @@ module synckey
     logic [15:0] encoderIn;
     counterParametric #(.COUNT(6'd63), .WIDTH(6)) a
     (
-        .clk(clk), .rst(rst), .counter(columnTimer), .en(1)
+        .clk(clk), .rst(rst), .counter(columnTimer), .en(1), .syncRst(1'b0)
     );
 
     // For 16 clock cycles, the button matrix will search for a positive edge for a column, then switch

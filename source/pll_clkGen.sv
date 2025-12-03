@@ -1,6 +1,15 @@
 module pll_clkGen (
     output logic VGA_CLK
 );
+`ifndef SYNTHESIS
+    //simulation version
+    initial VGA_CLK = 0;
+
+    // Fake 25 MHz clock (40 ns period)
+    always #20 VGA_CLK = ~VGA_CLK;
+
+`else
+    //hardware version
     // Step 1: Internal 12 MHz oscillator
     logic clk_int;
     SB_HFOSC #(
@@ -30,4 +39,5 @@ module pll_clkGen (
 
     // Step 3: Output
     assign VGA_CLK = pll_out;
+`endif
 endmodule
