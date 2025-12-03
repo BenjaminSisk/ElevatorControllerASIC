@@ -3,7 +3,6 @@ module pixel_gen (
     input logic enable,
     input logic [7:0] destination,
     input logic [1:0]sim_state,
-    input logic [25:0]people_data,
     input logic [9:0] x_coord,
     input logic [9:0] y_coord,
     output logic [3:0] R,
