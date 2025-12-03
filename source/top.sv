@@ -1,3 +1,4 @@
+// Top module that was used during the demonstration. Full integration was not complete at that time, and there were conflicts with the board and PLL clk
 module top (
     // VGA Pins
     output logic ICE_44_G6, ICE_45, ICE_46, ICE_47, ICE_48, ICE_2, ICE_3, ICE_4,
@@ -11,7 +12,7 @@ module top (
     pll_clkGen u2 (.VGA_CLK(pixel_CLK));
 
 
-    clkDivider #(.COUNT(100'b1), .WIDTH(100)) divide 
+    clkDivider #(.COUNT(20'b1), .WIDTH(20)) divide 
     (
         .clk(pixel_CLK), .rst(1'b0), .clkOut(clk)
     );
