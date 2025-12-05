@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 `default_nettype none
-module people_control_tb ();
+module peopleControl_tb ();
 
     // Input and Output Signals
     logic clk, rst,
@@ -11,6 +11,7 @@ module people_control_tb ();
     logic [11:0] requested, destination;
     logic [629:0] xpos;
     logic [251:0] ypos;
+    logic [7:0] elevator_states;
 
 
     // Module Instantiation
@@ -26,20 +27,41 @@ module people_control_tb ();
         .floorDestinations(destination),
         .floorsRequested(requested),
         .randy(rand)
+        .elevatorStates(elevator_states)
     );
 
     // Clock, roughly 750 kHz
-    initial clock = 0;
-    always #1333 clk = ~clk;
+    initial begin
+        clk = 1'b0;
+        forever begin
+            #1333 clk = ~clk
+        end
+    end
 
     // Stimulus
     initial begin
-        reset = 1;
+        reset = 0;
         rand = 0;
-        
+        sim_speed = 3'b001;
+        sim_state = 2'b01;
+        people = 63;
+
+        #1333000;
+        rand = 10'b1;
+        elevator_states = 8'b1111_1111;
+
+        #1333000;
+        rand = 10'b111;
+        elevator_states = 8'0000_0001;
 
 
     end
+
+    initial begin
+        $dumpfile("peopleControl_tb.vcd");
+        $dumpvars(0, peopleControl_tb);
+    end
+
 
 
 endmodule
