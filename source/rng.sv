@@ -12,7 +12,7 @@ module rng
     logic [7:0] pointer;
     counterParametric #(.COUNT(8'd255), .WIDTH(8)) rngCounter
     (
-        .clk(clk), .rst(rst), .counter(pointer), .en(1)
+        .clk(clk), .rst(rst), .counter(pointer), .en(1), .syncRst(0)
     );
 
     always_comb begin

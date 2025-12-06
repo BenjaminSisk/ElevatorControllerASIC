@@ -19,18 +19,20 @@ module rng_tb ();
     end
 
     // Module instantiation
-    rng rng_mod (.clk(clk), .rst(rst), .randy(rand_mod));
+    rng uut (.clk(clk), .rst(rst), .randy(rand_mod));
 
-    // Counter to check the same values
-    for (int i = 0; i < 256; i++) begin
-        rand_test = mem[i]
-    end
-
-    // Dump for GTKWave
     initial begin
         $dumpfile("rng_tb.vcd");
         $dumpvars(0, rng_tb);
+        $finish;
     end
 
-
+    initial begin
+        // Counter to check the same values
+        for (int i = 0; i < 10; i++) begin
+            rand_test = mem[i];
+            #1333;
+        end
+        $finish;
+    end
 endmodule

@@ -46,13 +46,15 @@ module peopleControl_tb ();
         sim_state = 2'b01;
         people = 63;
 
-        #1333000;
+
         rand = 10'b1;
         elevator_states = 8'b1111_1111;
-
         #1333000;
+
+
         rand = 10'b111;
         elevator_states = 8'0000_0001;
+        #1333000;
 
 
     end
