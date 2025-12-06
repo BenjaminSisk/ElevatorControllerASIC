@@ -7,7 +7,6 @@ module centralFSM
     output logic [2:0] simSpeed, 
     output logic [5:0] people
 );
-
     typedef enum logic [1:0] {
         START = 2'b0,
         SIM = 2'b1, 
@@ -47,9 +46,10 @@ module centralFSM
             SIM: simState_n = (buttonBus == STOP) ? PAUSE : SIM;
             PAUSE: 
             begin
-            if (buttonBus == RESUME) simState_n = SIM;
-            else if (buttonBus == STOP) simState_n = ENDING;
-            else simState_n = PAUSE; 
+            if (buttonBus == RESUME)      simState_n = STATE'(SIM);
+            else if (buttonBus == STOP)   simState_n = STATE'(ENDING);
+            else                          simState_n = STATE'(PAUSE);
+ 
             end
             ENDING: simState_n = (buttonBus == RESUME) ? START : ENDING;
             default: simState_n = START;
@@ -96,8 +96,8 @@ module centralFSM
     always_comb begin
         if (buttonBus == ENTER | buttonBus == ESCAPE | !(simState == START)) begin
             number_n = 0;
-        end else if (|buttonNumber[9:0]) begin
-            number_n = number * 10 + {2'b0, buttonBus};
+        end else if (|buttonNumber) begin
+            number_n = 6'(number * 6'd10 + {2'b0, buttonBus});
             number_n = (number > number_n) ? number: number_n;
         end else begin
             number_n = number;
@@ -147,7 +147,8 @@ module centralFSM
         simSpeed_n = simSpeed;
         if(buttonBus == ENTER && setting == SIMSPEED) begin 
             if (number < 7) begin
-                simSpeed_n = number[2:0];
+                simSpeed_n = 3'(number[2:0]);
+
             end else begin
                 simSpeed_n = 7;
             end
@@ -168,7 +169,8 @@ module centralFSM
         people_n = people;
         if (buttonBus == ENTER && setting == PEOPLE) begin
             if (number < 63) begin
-                people_n = number;
+                people_n = 6'(number);
+
             end else begin
                 people_n = 63;
             end
