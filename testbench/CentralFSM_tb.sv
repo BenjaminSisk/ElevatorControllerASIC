@@ -69,7 +69,7 @@ module centralFSM_tb;
 
         #30 rst = 0;
         #20;
-
+        //starting simulation
         press_button(RESUME);
         #20;
         press_button(STOP);
@@ -83,10 +83,12 @@ module centralFSM_tb;
         press_button(RESUME);
         #20;
 
+        //entering in speed setting
         press_button(UP);
         press_button(UP);
         press_button(UP);
 
+        //entering in floor setting
         setting_force_people();
         press_numeric(4);
         press_numeric(5);
