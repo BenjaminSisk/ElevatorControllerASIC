@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 module rng_tb ();
 
     logic [11:0] rand_mod;
@@ -24,14 +25,17 @@ module rng_tb ();
     initial begin
         $dumpfile("rng_tb.vcd");
         $dumpvars(0, rng_tb);
-        $finish;
     end
 
     initial begin
         // Counter to check the same values
-        for (int i = 0; i < 10; i++) begin
+        rst = 1;
+        #1333;
+        rst = 0;
+        for (int i = 0; i < 10; i = i + 1) begin
+            @(posedge clk);
             rand_test = mem[i];
-            #1333;
+
         end
         $finish;
     end
