@@ -45,21 +45,17 @@ module DirectionScoringSystem_tb();
         // Move left elevator floor-by-floor
         FloorDestinations = 12'd1;
         #2000000;
-        FloorDestinations = 12'd2;
+        repeat(11) begin
+        FloorDestinations = FloorDestinations << 1;
         #2000000;
-        FloorDestinations = 12'd4;
+        end
+        repeat(12) begin
+        FloorDestinations = FloorDestinations >> 1;
         #2000000;
-        FloorDestinations = 12'd8;
+        end
+        rst = 1;
         #2000000;
-        FloorDestinations = 12'd16;
-        #2000000;
-        FloorDestinations = 12'd32;
-        #2000000;
-        FloorDestinations = 12'd64;
-        #2000000;
-        FloorDestinations = 12'd128;
-        #2000000;
-
+        rst = 0;
         $display("Simulation finished.");
         $finish;
         //$stop;
