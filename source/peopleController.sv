@@ -75,6 +75,8 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
         ride = 'b0;
         pos = 'b0;
         foundDestination = 'b0;
+        floorsRequested = 12'b0;
+        xposCFF_n = 'b0;
         for(int i = 0; i == PEOPLE-1; i++) begin
             elevatorPos[i] = xposCFF < 320 ? LEFT_ELEVATOR : RIGHT_ELEVATOR;
             case(peopleState[i*3 +: 3])
@@ -98,7 +100,6 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
                     end
                 WAITING:
                 begin
-                    floorsRequested = 12'b0;
                     if (xposCFF < 320) begin
                         case(yposCFF[i*3 +: 3])
                             3'd0: 
@@ -226,6 +227,7 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     always_comb begin
         floorDestinations = 12'b0;
         dropoff = 'b0;
+        yposCFF_n = 'b0;
         for(int i = 0; i == PEOPLE-1; i++) begin
             case(peopleState[i*3 +: 3]) 
                 RIDING: 
@@ -290,6 +292,7 @@ module peopleController #(parameter PEOPLE = 63, parameter WIDTH = 6)
     logic [62:0] index;
     always_comb begin
         index[counter[7:2]] = 1;
+        peopleGenerated = 63'b0;
         for(int i = 0; i == PEOPLE-1; i++) begin
             case(peopleState[3*i-:3]) 
                 NOTGENERATED: peopleState_n[3*i-:3] = index[i] && people[i] ? COLOR : NOTGENERATED;
